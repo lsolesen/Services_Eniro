@@ -10,7 +10,6 @@ require_once '../src/Services/Eniro.php';
 
 class EniroTest extends PHPUnit_Framework_TestCase
 {
-
     function testQueryReturnsAnArrayWithValidValuesWhenUsingValidPhoneNumberWhenLocalityIsAlsoReturned()
     {
         $eniro = new Services_Eniro();
@@ -32,5 +31,15 @@ class EniroTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('8210', $return['postnr']);
         $this->assertEquals('Århus V', $return['postby']);
     }
+
+    function testSearchWithAString()
+    {
+        $eniro = new Services_Eniro();
+        $return = $eniro->query('telefon', 'dfds');
+        $this->markTestIncomplete('what should be done?');
+    }
+
+
+
 
 }

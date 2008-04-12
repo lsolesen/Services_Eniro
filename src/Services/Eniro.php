@@ -45,7 +45,7 @@ class Services_Eniro {
      *
      * @return void
      */
-    public function __construct($pincode = NULL)
+    public function __construct($pincode = null)
     {
         $this->pincode = $pincode;
     }
@@ -61,8 +61,7 @@ class Services_Eniro {
     public function query($field, $query)
     {
         $link = 'http://person.eniro.dk/query?what=wp&lang=&search_word=' . $query;
-        $req = new HTTP_Request($link,
-                                array('timeout', 3));
+        $req = new HTTP_Request($link, array('timeout', 3));
 
         if (PEAR::isError($req->sendRequest())) {
             throw new Exception('Could not send the request: ' . $req->getMessage());
@@ -83,10 +82,10 @@ class Services_Eniro {
 
         preg_match("/<span class=\"place-name\">.*<\/span>/", $xml, $place);
         $place = array_map('strip_tags', $place);
-        
+
         preg_match("/<span class=\"postal-code\">.*<\/span>&nbsp;<span class=\"locality\">/", $xml, $postalcode);
         $postalcode = array_map('strip_tags', $postalcode);
-        $postalcode = array_map(create_function('$pc', 'return substr($pc, 0, 4);'), $postalcode); 
+        $postalcode = array_map(create_function('$pc', 'return substr($pc, 0, 4);'), $postalcode);
 
         preg_match("/<span class=\"locality\">.*<\/span><br\/> <\/p>/", $xml, $locality);
         $locality = array_map('strip_tags', $locality);
@@ -124,7 +123,5 @@ class Services_Eniro {
         $healthy = array('&oslash;', '&aelig;', '&Aring;', '&aring;', '&Aelig;', '&Oslash;');
         $yummy = array('ø', 'æ', 'Å', 'å', 'Æ', 'Ø');
         return str_replace($healthy, $yummy, $phrase);
-
     }
 }
-?>
