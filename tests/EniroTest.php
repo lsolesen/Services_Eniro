@@ -15,7 +15,7 @@ class EniroTest extends PHPUnit_Framework_TestCase
         $eniro = new Services_Eniro();
         $return = $eniro->query('telefon', '98468269');
         $this->assertTrue(is_array($return));
-        $this->assertEquals('Doris Knøsen &  Jens Knøsen', $return['navn']);
+        $this->assertEquals('Doris Skovgård Knøsen', $return['navn']);
         $this->assertEquals('Græsvangen 8', $return['adresse']);
         $this->assertEquals('9300', $return['postnr']);
         $this->assertEquals('Sæby', $return['postby']);
@@ -27,7 +27,7 @@ class EniroTest extends PHPUnit_Framework_TestCase
         $return = $eniro->query('telefon', '51906011');
         $this->assertTrue(is_array($return));
         $this->assertEquals('Sune Thorbøll Jensen', $return['navn']);
-        $this->assertEquals('Jens Baggesens Vej 42 3, Th', $return['adresse']);
+        $this->assertEquals('Jens Baggesens Vej 42 3, th', $return['adresse']);
         $this->assertEquals('8210', $return['postnr']);
         $this->assertEquals('Århus V', $return['postby']);
     }

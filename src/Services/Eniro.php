@@ -68,33 +68,34 @@ class Services_Eniro {
         }
 
         $xml = $req->getResponseBody();
-
-        preg_match("/<a class=\"fn expand\" href=\"#\"><span>.*<\/span><\/a><\/h3>/", $xml, $name);
-        $name = array_map('strip_tags', $name);
-
-        if (strpos($xml, '<span class="place-name">')) {
-            preg_match("/<p class=\"adr\">  <span class=\"street-address\">.* <\/span>  <span class=\"place-name\">/", $xml, $address);
-            $address = array_map('strip_tags', $address);
-        } else {
-            preg_match("/<p class=\"adr\">  <span class=\"street-address\">.* <\/span>  <span class=\"postal-code\">/", $xml, $address);
-            $address = array_map('strip_tags', $address);
+        // <a class=\"fn expand\" href=\"#\">\s*<span>.*<\/span>\s*<\/a>\s*<\/h3>
+        preg_match("/<a class=\"fn expand\" href=\"#\">\s*<span>(.*)\s*<\/span>\s*<\/a>/", $xml, $name);
+        $name = $this->getValue($name);
+        $name = $this->replaceCharacters($name);
+        
+        preg_match("/<span class=\"street-address\">(.*) <\/span>/", $xml, $address);
+        $address = $this->getValue($address);
+        $address = $this->replaceCharacters($address);
+        
+        preg_match("/<span class=\"place-name\">(.*) <\/span>/", $xml, $place);
+        $place = $this->getValue($place);
+        $place = $this->replaceCharacters($place);
+        if(!empty($place)) {
+            $address .= ', '.$place;
         }
 
-        preg_match("/<span class=\"place-name\">.*<\/span>/", $xml, $place);
-        $place = array_map('strip_tags', $place);
+        preg_match("/<span class=\"postal-code\">\s*(.*)\s*<\/span>/", $xml, $postalcode);
+        $postalcode = $this->getValue($postalcode);
+        $postalcode = $this->replaceCharacters($postalcode);
 
-        preg_match("/<span class=\"postal-code\">.*<\/span>&nbsp;<span class=\"locality\">/", $xml, $postalcode);
-        $postalcode = array_map('strip_tags', $postalcode);
-        $postalcode = array_map(create_function('$pc', 'return substr($pc, 0, 4);'), $postalcode);
+        preg_match("/<span class=\"locality\">\s*(.*)\s*<\/span>/", $xml, $locality);
+        $locality = $this->getValue($locality);
+        $locality = $this->replaceCharacters($locality);
 
-        preg_match("/<span class=\"locality\">.*<\/span><br\/> <\/p>/", $xml, $locality);
-        $locality = array_map('strip_tags', $locality);
-
-
-        $data = array('navn'    => $this->replaceCharacters($this->getValue($name)),
-                      'adresse' => $this->replaceCharacters($this->getValue($address)),
-                      'postnr'  => $this->replaceCharacters($this->getValue($postalcode)),
-                      'postby'  => $this->replaceCharacters($this->getValue($locality)));
+        $data = array('navn'    => $name,
+                      'adresse' => $address,
+                      'postnr'  => $postalcode,
+                      'postby'  => $locality);
 
         $data = array_map('trim', $data);
 
@@ -111,8 +112,8 @@ class Services_Eniro {
 
     protected static function getValue($value)
     {
-        if (!empty($value[0])) {
-            return $value[0];
+        if (!empty($value[1])) {
+            return $value[1];
         } else {
             return '';
         }
