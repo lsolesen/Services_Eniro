@@ -68,16 +68,17 @@ class Services_Eniro {
         }
 
         $xml = $req->getResponseBody();
-        // <a class=\"fn expand\" href=\"#\">\s*<span>.*<\/span>\s*<\/a>\s*<\/h3>
-        preg_match("/<a class=\"fn expand\" href=\"#\">\s*<span>(.*)\s*<\/span>\s*<\/a>/", $xml, $name);
-        $name = $this->getValue($name);
+        preg_match("/<span class=\"given-name\"\>(.*)<\/span>/", $xml, $given_name);
+        preg_match("/<span class=\"family-name\"\>(.*)<\/span>/", $xml, $family_name);
+
+        $name = $this->getValue($given_name) . ' ' . $this->getValue($family_name);
         $name = $this->replaceCharacters($name);
-        
-        preg_match("/<span class=\"street-address\">(.*) <\/span>/", $xml, $address);
+
+        preg_match("/<span class=\"street-address\">(.*)<\/span>/", $xml, $address);
         $address = $this->getValue($address);
         $address = $this->replaceCharacters($address);
-        
-        preg_match("/<span class=\"place-name\">(.*) <\/span>/", $xml, $place);
+
+        preg_match("/<span class=\"place-name\">(.*)<\/span>/", $xml, $place);
         $place = $this->getValue($place);
         $place = $this->replaceCharacters($place);
         if(!empty($place)) {
@@ -113,7 +114,7 @@ class Services_Eniro {
     protected static function getValue($value)
     {
         if (!empty($value[1])) {
-            return $value[1];
+            return strip_tags($value[1]);
         } else {
             return '';
         }
