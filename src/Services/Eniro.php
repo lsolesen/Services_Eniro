@@ -4,8 +4,6 @@
  *
  * PHP version 5
  *
- * TODO get the encoding correct
- *
  * @category  Services
  * @package   Services_Eniro
  * @author    Lars Olesen <lars@legestue.net>
@@ -31,24 +29,14 @@ require_once 'HTTP/Request.php';
  * @copyright 2007 Lars Olesen
  * @version   @package-version@
  */
-class Services_Eniro {
-
-    /**
-     * @var string
-     */
-    protected $pincode;
-
+class Services_Eniro
+{
     /**
      * Constructor
      *
-     * @param int $pincode Not necessary but it would be clever to maintain for newer versions
-     *
      * @return void
      */
-    public function __construct($pincode = null)
-    {
-        $this->pincode = $pincode;
-    }
+    public function __construct() {}
 
     /**
      * Queries the Eniro REST service
@@ -81,7 +69,7 @@ class Services_Eniro {
         preg_match("/<span class=\"place-name\">(.*)<\/span>/", $xml, $place);
         $place = $this->getValue($place);
         $place = $this->replaceCharacters($place);
-        if(!empty($place)) {
+        if (!empty($place)) {
             $address .= ', '.$place;
         }
 
